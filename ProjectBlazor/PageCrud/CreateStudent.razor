@@ -1,0 +1,30 @@
+﻿@page "/CreateStudent"
+@using ProjectBlazor.DTO
+@using ProjectBlazor.StudentData
+@using ProjectBlazor.TeacherData
+@using ProjectBlazor.Models
+@inject IStudent _Stserves;
+<h3>CreateStudent</h3>
+<div>
+    <label>StudentName</label>
+    <p><InputText placeholder="StudentName" @bind-Value="@studentes.Name"></InputText></p>
+    <input type="button" class="btn btn-primary" value="Create" @onclick="Create" />
+</div>
+
+@code {
+    private CreateStudentDTO studentes { get; set; } = new();
+
+    private async Task Create()
+    {
+        try
+        {
+            var result = await _Stserves.CreateStudent(studentes);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Kechirasiz Afsuski Bu Student Tablega Qushilmadi" + e.Message);
+        }
+    }
+
+
+}

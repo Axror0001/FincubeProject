@@ -1,0 +1,77 @@
+﻿@page "/Student"
+@inject NavigationManager _Navigation;
+@using ProjectBlazor.DTO
+@using ProjectBlazor.Models
+@using ProjectBlazor.StudentData
+@using ProjectBlazor.Models
+@inject IStudent _studentService
+<h3>Student</h3>
+<label>O`zgartirmoqchi bo`lgan talabani ismini tanlang</label>
+
+
+<div class="form-group">
+    <input placeholder="StudentName" class="form-control" list="list-students" id="list-detalist" @onchange="@HandleChange">
+    <datalist id="list-students">
+        @foreach (var student in Students)
+        {
+            <option>@student.Name</option>
+        }
+    </datalist>
+</div>
+
+@if (Students == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>StudentID</th>
+                <th>StudentName</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Students)
+            {
+                <tr>
+                    <td>@student.studentId</td>
+                    <td>@student.Name</td>
+                    <td>
+                        <button type="button" @onclick="() => { Delete(student.studentId);}" class="btn-danger float-end">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+
+<div class="d-grid gap-3">
+    <a href="/CreateStudent" class="btn btn-success">CreateStudent</a>
+</div>
+
+
+@code {
+    private List<Student> Students { get; set; } = new List<Student>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Students = await _studentService.GetAllStudent();
+    }
+    private async Task Delete(int studentId)
+    {
+        await _studentService.DeleteStudent(studentId);
+        Students = await _studentService.GetAllStudent();
+        StateHasChanged();
+    }
+
+    private int selectedStudent = 0;
+    public void HandleChange(ChangeEventArgs args)
+    {
+
+        selectedStudent = Students.FirstOrDefault(x => x.Name.Equals(args.Value.ToString())).studentId;
+        _Navigation.NavigateTo($"updatestudent/{selectedStudent}");
+    }
+}

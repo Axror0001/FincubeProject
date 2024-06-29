@@ -1,0 +1,84 @@
+﻿@page "/ExcelTeacherFile"
+@using ProjectBlazor.Models
+@using ProjectBlazor.TeacherData
+@using OfficeOpenXml
+@using System.ComponentModel
+@inject ITeacher Service;
+@inject HttpClient _httpClient
+<h3>ExcelTeacherFile</h3>
+<form>
+    <InputFile OnChange="OnInputFileChange" multiple />
+    <button class="btn btn-primary" type="submit" @onclick="OnSubmit">SaveTable</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            @foreach (var col in Columns)
+            {
+                <th>@col</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rows in Rows)
+        {
+            <tr>
+                @foreach (var row in rows)
+                {
+                    <td>@row</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<string> Columns { get; set; } = new List<string>();
+    private List<List<string>> Rows { get; set; } = new List<List<string>>();
+    private IBrowserFile files;
+    public async void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        files = e.File;
+        using (var stream = new MemoryStream())
+        {
+            await file.OpenReadStream().CopyToAsync(stream);
+            stream.Position = 0;
+           // ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                var colCount = worksheet.Dimension.Columns;
+                var rowCount = worksheet.Dimension.Rows;
+
+                Rows.Clear();
+                Columns.Clear();
+
+                for (int col = 1; col <= colCount; col++)
+                {
+                    Columns.Add(worksheet.Cells[1, col].Text);
+                }
+                for (int row = 1; row <= rowCount; row++)
+                {
+                    var rowData = new List<string>();
+                    for (int col = 1; col <= colCount; col++)
+                    {
+                        rowData.Add(worksheet.Cells[row, col].Text);
+                    }
+                    Rows.Add(rowData);
+                }
+            }
+        }
+        StateHasChanged();
+    }
+    public async Task OnSubmit()
+    {
+        using (var content = new MultipartFormDataContent())
+        {
+            content.Add(new StreamContent(files.OpenReadStream()), "e", files.Name);
+            var responce = await _httpClient.PostAsync("UploadTeacher", content);
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,100 @@
+﻿@page "/Teachers"
+@using ProjectBlazor.Models
+@using ProjectBlazor.TeacherData
+@using ProjectBlazor.TeacherStudentData
+@using ProjectBlazor.Models
+@inject ITeacherStudent _teacherstudent
+@inject ITeacher _teacher
+<h3>Teachers</h3>
+
+
+<label>TeacherId</label>
+<input placeholder="TeacherId" @bind="TeacherId" />
+<button type="button" class="btn btn-primary" @onclick="GetIdStudents">GetStudents</button>
+
+@if (teachers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>TeacherId</th>
+                <th>TeacherName</th>
+                <th>Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var teacher in teachers)
+            {
+                <tr>
+                    <td>@teacher.teacherId</td>
+                    <td>@teacher.Name</td>
+                    <td>@teacher.Science</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<label>StudentId</label>
+<input placeholder="StudentId" @bind-value="studentId" />
+<label>TeacherId</label>
+<input placeholder="TeacherId" @bind-value="teacherId" />
+<button type="button" class="btn btn-danger" @onclick="DeleteTeacher">Delete</button>
+
+@if (students == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>StudentId</th>
+                <th>StudentName</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in students)
+            {
+                <tr>
+                    <td>@student.studentId</td>
+                    <td>@student.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private List<Teacher> teachers = new List<Teacher>();
+
+    private List<Student> students = new List<Student>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        teachers = await _teacher.GetAllTeacher();
+    }
+
+    private int TeacherId { get; set; }
+
+    private async Task GetIdStudents()
+    {
+        students = await _teacherstudent.GetTeachIdStudents(TeacherId);
+    }
+
+    private int teacherId { get; set; }
+
+    private int studentId { get; set; }
+
+    private async Task DeleteTeacher()
+    {
+        await _teacherstudent.DeleteTeachStu(studentId, teacherId);
+        students = await _teacherstudent.GetTeachIdStudents(TeacherId);
+        StateHasChanged();
+
+    }
+
+}

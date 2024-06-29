@@ -1,0 +1,75 @@
+﻿@page "/Teacher"
+@using ProjectBlazor.DTO
+@using ProjectBlazor.TeacherData
+@using ProjectBlazor.Models
+@using ProjectBlazor.Models
+@inject NavigationManager _Navigation
+@inject ITeacher _teacherService
+<h3>Teacher</h3>
+<label>O`zgartirmoqchi bo`lgan teacherni tanlang</label>
+<div class="form-group">
+    <input placeholder="TeacherName" class="form-control" list="list-teachers" id="list-detalist" @onchange="@ChangeTeacher">
+    <datalist id="list-teachers">
+        @foreach (var teacher in Teachers)
+        {
+            <option>@teacher.Name</option>
+        }
+    </datalist>
+</div>
+@if (Teachers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>TeacherID</th>
+                <th>TeacherName</th>
+                <th>Science</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var teacheres in Teachers)
+            {
+                <tr>
+                    <td>@teacheres.teacherId</td>
+                    <td>@teacheres.Name</td>
+                    <td>@teacheres.Science</td>
+                    <td>
+                        <button type="button" @onclick="() => {Delete(teacheres.teacherId);}" class="btn btn-danger float-end">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<div class="d-grid gap-3">
+    <a href="/CreateTeach" class="btn btn-success">Create</a>
+</div>
+@code {
+    private List<Teacher> Teachers = new List<Teacher>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Teachers = await _teacherService.GetAllTeacher();
+    }
+
+
+    private async Task Delete(int teacherId)
+    {
+        await _teacherService.DeleteTeacher(teacherId);
+        Teachers = await _teacherService.GetAllTeacher();
+        StateHasChanged();
+    }
+
+    private int selectTeacher = 0;
+
+    public void ChangeTeacher(ChangeEventArgs args)
+    {
+        selectTeacher = Teachers.FirstOrDefault(x => x.Name.Equals(args.Value.ToString())).teacherId;
+        _Navigation.NavigateTo($"UpdateTeacher/{selectTeacher}");
+    }
+
+}

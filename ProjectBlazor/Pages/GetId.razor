@@ -1,0 +1,47 @@
+﻿@page "/GetId/{studentid:int}"
+@using ProjectBlazor.Models
+@using ProjectBlazor.TeacherData
+@using ProjectBlazor.TeacherStudentData
+@inject NavigationManager _Navigation
+@inject ITeacher _teacher
+@inject ITeacherStudent _teacherstudent
+<h3>GetId</h3>
+
+@if (teachers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>TeacherId</th>
+                <th>TeacherName</th>
+                <th>Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in teachers)
+            {
+                <tr>
+                    <td>@student.teacherId</td>
+                    <td>@student.Name</td>
+                    <td>@student.Science</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public int studentid { get; set; }
+
+    private List<Teacher> teachers = new List<Teacher>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        teachers = await _teacherstudent.GetStIdTeachers(studentid);
+    }
+}

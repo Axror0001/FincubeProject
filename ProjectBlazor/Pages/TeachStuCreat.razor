@@ -1,0 +1,62 @@
+﻿@page "/TeacherStuCreate"
+@using ProjectBlazor.DTO
+@using ProjectBlazor.Models
+@using ProjectBlazor.StudentData
+@using ProjectBlazor.TeacherData
+@using ProjectBlazor.TeacherStudentData
+@using ProjectBlazor.Models
+@inject ITeacherStudent _teachStuServes
+@inject IStudent _student
+@inject ITeacher _teacher
+@inject NavigationManager _Navigation
+<h3>Uzingizga Uqituvchi yokida Uquvchi  tanlamoqchimisiz</h3>
+
+<div class="d-grid gap-sm-5">
+    <div class="form-group">
+        <input placeholder="StudentName" @bind-value="StudentName" class="form-control" list="list-students" id="list-detalist">
+        <datalist id="list-students">
+            @foreach (var student in students)
+            {
+                <option>@student.Name</option>
+            }
+        </datalist>
+    </div>
+    <div class="form-group">
+        <label>Teachers</label>
+        <input placeholder="TeacherName" @bind-value="TeacherName" class="form-control" list="list-teachers" id="list-detalist">
+        <datalist id="list-teachers">
+            @foreach (var teacher in teachers)
+            {
+                <option>@teacher.Name</option>
+            }
+        </datalist>
+    </div>
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-success" @onclick="CreateST">Take Teacher</button>
+    </div>
+</div>
+
+@code {
+
+    private List<TeacherStudent> teacherstudent = new List<TeacherStudent>();
+
+    private List<Teacher> teachers = new List<Teacher>();
+
+    private List<Student> students = new List<Student>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        teachers = await _teacher.GetAllTeacher();
+        students = await _student.GetAllStudent();
+    }
+
+    private string TeacherName { get; set; }
+
+    private string StudentName { get; set; }
+    private async Task CreateST()
+    {
+        var result1 = teachers.FirstOrDefault(x => x.Name.Contains(TeacherName));
+        var result2 = students.FirstOrDefault(x => x.Name.Contains(StudentName));
+        var result = await _teachStuServes.CreateTeachStu(result2.studentId, result1.teacherId);
+    }
+}

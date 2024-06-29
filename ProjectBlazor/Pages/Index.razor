@@ -1,0 +1,23 @@
+﻿@page "/"
+@using ProjectBlazor.Models
+@using ProjectBlazor.StudentData
+@inject IStudent _student
+<label>Studentni tanlang</label>
+<select class="form-select">
+    <option value="0" selected>Talabalar</option>
+    @foreach (var student in students)
+    {
+        <option>@student.Name</option>
+    }
+</select>
+
+@code
+{
+    private List<Student> students = new List<Student>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await _student.GetAllStudent();
+    }
+}
+

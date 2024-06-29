@@ -1,0 +1,25 @@
+﻿@page "/UpdateTeacher/{TeacherId:int}"
+@using ProjectBlazor.DTO
+@using ProjectBlazor.TeacherData
+@inject ITeacher _teacher
+<h3>UpdateTeacher</h3>
+<label>TeacherName</label>
+<input placeholder="TeacherName" @bind-value="teachers.Name" />
+<label>Subject</label>
+<input placeholder="Subject" @bind-value="teachers.Science" />
+<button type="button" class="btn btn-success" @onclick="UpdateAt">Update</button>
+
+@code {
+    [Parameter]
+    public int TeacherId { get; set; }
+
+    private CreateTeacherDto teachers { get; set; } = new();
+
+    private int teachersId { get; set; }
+
+    private async Task UpdateAt()
+    {
+        teachers.Id = TeacherId;
+        var result = await _teacher.UpdateTeacheres(teachers);
+    }
+}

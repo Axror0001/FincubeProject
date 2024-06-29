@@ -1,0 +1,60 @@
+﻿@page "/Delete"
+@using FinCubBlazor.Models
+@using FinCubBlazor.StudentData
+@using FinCubBlazor.TeacherData
+@using FinCubBlazor.TeacherStudentData
+@inject NavigationManager _Navigation
+@inject IStudent _student
+@inject ITeacherStudent _teacherstudent
+@inject ITeacher _teacher
+<h3>Qaysi Studentdan Teacherni O`chirmoqchisiz</h3>
+<div class="d-grid gap-sm-5">
+    <div class="form-group">
+        <input placeholder="StudentName" @bind-value="StudentName" class="form-control" list="list-students" id="list-detalist">
+        <datalist id="list-students">
+            @foreach (var student in students)
+            {
+                <option>@student.Name</option>
+            }
+        </datalist>
+    </div>
+    <div class="form-group">
+        <label>Teachers</label>
+        <input placeholder="TeacherName" @bind-value="TeacherName" class="form-control" list="list-teachers" id="list-detalist">
+        <datalist id="list-teachers">
+            @foreach (var teacher in teachers)
+            {
+                <option>@teacher.Name</option>
+            }
+        </datalist>
+    </div>
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-success" @onclick = "DeleteAll">Delete</button>
+    </div>
+</div>
+
+@code {
+    private List<Student> students = new List<Student>();
+
+    private List<Teacher> teachers = new List<Teacher>();
+
+
+    public string StudentName{ get; set; }
+
+
+    public string TeacherName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await _student.GetAllStudent();
+        teachers = await _teacher.GetAllTeacher();
+    }
+
+
+    private async Task DeleteAll()
+    {
+        var result1 = students.FirstOrDefault(x => x.Name.Contains(StudentName));
+        var result2 = teachers.FirstOrDefault(x => x.Name.Contains(TeacherName));
+        await _teacherstudent.DeleteTeachStu(result1.studentId, result2.teacherId);
+    }
+}

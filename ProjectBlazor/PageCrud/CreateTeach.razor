@@ -1,0 +1,30 @@
+﻿@page "/CreateTeach"
+@using ProjectBlazor.DTO
+@using ProjectBlazor.TeacherData
+@using ProjectBlazor.Models
+@inject ITeacher _teachserves;
+<h3>CreateTeacher</h3>
+<div>
+    <label>TeacherName</label>
+    <p><InputText placeholder="Name" @bind-Value="@teacheres.Name"></InputText></p>
+    <label>Subject</label>
+    <p><InputText placeholder="Subject" @bind-Value="@teacheres.Science"></InputText></p>
+    <input type="button" class="btn btn-primary" value="Create" @onclick="Create" />
+</div>
+
+@code {
+    private CreateTeacherDto teacheres { get; set; } = new();
+
+    private async Task Create()
+    {
+        try
+        {
+            var result = await _teachserves.CreateTeacher(teacheres);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Kechirasiz afsuski bu Teacher tablega qushilmadi" + e.Message);
+        }
+    }
+
+}

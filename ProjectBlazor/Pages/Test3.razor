@@ -1,0 +1,70 @@
+﻿@page "/TeachStudent"
+@using ProjectBlazor.Models
+@using ProjectBlazor.StudentData
+@using ProjectBlazor.TeacherData
+@using ProjectBlazor.TeacherStudentData
+@using ProjectBlazor.Models
+@inject NavigationManager _Navigation
+@inject ITeacherStudent _servesteacher
+@inject IStudent _student
+@inject ITeacher _teacher
+<h3>TeacherStudent</h3>
+<div class="d-grid gap-sm-5">
+    <div class="d-grid gap-2">
+        <div class="form-group">
+            <input placeholder="StudentName" class="form-control" list="list-students" id="list-detalist" @onchange="@HandleChange">
+            <datalist id="list-students">
+                @foreach (var student in students)
+                {
+                    <option>@student.Name</option>
+                }
+            </datalist>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2">
+        <div class="form-group">
+            <input placeholder="TeacherName" class="form-control" list="list-teachers" id="list-detalist" @onchange="@GetIdStudents">
+            <datalist id="list-teachers">
+                @foreach (var teacher in teachers)
+                {
+                    <option>@teacher.Name</option>
+                }
+            </datalist>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@code {
+    private List<Student> students = new List<Student>();
+
+    private List<Teacher> teachers = new List<Teacher>();
+
+    private List<TeacherStudent> teacherStudents = new List<TeacherStudent>();
+    protected override async Task OnInitializedAsync()
+    {
+        students = await _student.GetAllStudent();
+        teachers = await _teacher.GetAllTeacher();
+    }
+
+    private int selectedTeacher { get; set; }
+    public void HandleChange(ChangeEventArgs args)
+    {
+
+        selectedTeacher = students.FirstOrDefault(x => x.Name.Equals(args.Value.ToString())).studentId;
+        _Navigation.NavigateTo($"GetId/{selectedTeacher}");
+    }
+
+    private int selectedStudent { get; set; }
+    public void GetIdStudents(ChangeEventArgs args)
+    {
+
+        selectedStudent = teachers.FirstOrDefault(x => x.Name.Equals(args.Value.ToString())).teacherId;
+        _Navigation.NavigateTo($"GetStudent/{selectedStudent}");
+    }
+}

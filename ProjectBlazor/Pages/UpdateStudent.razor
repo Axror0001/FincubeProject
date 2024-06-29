@@ -1,0 +1,23 @@
+﻿@page "/UpdateStudent/{StudentId:int}"
+@using ProjectBlazor.DTO
+@using ProjectBlazor.Models
+@using ProjectBlazor.StudentData
+@using ProjectBlazor.DTO
+@inject IStudent _studentService
+
+<lavel>StudentName</lavel>
+<InputText pLaceholder="StudentName" @bind-Value="students.Name"></InputText>
+<button class="btn btn-primary" @onclick="UpdateStu">Update</button>
+
+@code {
+    [Parameter]
+    public int StudentId { get; set; }
+
+    private CreateStudentDTO students { get; set; } = new();
+
+    private async Task UpdateStu()
+    {
+        students.Id = StudentId;
+        var result = await _studentService.UpdateStudente(students);
+    }
+}
