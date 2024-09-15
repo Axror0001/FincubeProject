@@ -74,7 +74,7 @@ namespace Project_First.Controllers
                 {
                     await e.OpenReadStream().CopyToAsync(stream);
                     stream.Position = 0;
-                    ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+                  ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                     using (var package = new ExcelPackage(stream))
                     {
                         var worksheet = package.Workbook.Worksheets[0];
