@@ -45,7 +45,7 @@ namespace Project_First.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateTeacher(CreateTeacherDto teacher)
         {
             var teachers = new Teacher()
@@ -61,7 +61,7 @@ namespace Project_First.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost("upload")]
         public async Task<IActionResult> UploadTeacher(IFormFile e)
         {
             try

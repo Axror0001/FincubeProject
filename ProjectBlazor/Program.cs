@@ -20,7 +20,7 @@ builder.Services.AddTransient<ITeacherStudent, TeacherStudentDto>();
 builder.Services.AddSyncfusionBlazor();
 //builder.Services.AddSingleton<WeatherForecastService>();
 
-builder.Services.AddScoped(sp => new HttpClient() { BaseAddress = new Uri("") });
+builder.Services.AddScoped(sp => new HttpClient() { BaseAddress = new Uri("http://localhost:5177") });
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;

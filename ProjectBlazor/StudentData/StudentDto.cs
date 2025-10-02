@@ -33,7 +33,7 @@ namespace ProjectBlazor.StudentData
         public async Task<Student> CreateStudent(CreateStudentDTO student)
         {
             var stringContent = new StringContent(JsonConvert.SerializeObject(student), UnicodeEncoding.UTF8, "application/json");
-            var content = await _httpClient.PostAsync("CreateStudent", stringContent);
+            var content = await _httpClient.PostAsync("CreateStudent/create", stringContent);
             var result = JsonConvert.DeserializeObject<Student>(await content.Content.ReadAsStringAsync());
             return result;
         }
@@ -46,7 +46,7 @@ namespace ProjectBlazor.StudentData
         public async Task<Student> UpdateStudente(CreateStudentDTO student)
         {
             var responce = new StringContent(JsonConvert.SerializeObject(student), UnicodeEncoding.UTF8, "application/json");
-            var result = await _httpClient.PutAsync($"UpdateStudent", responce);
+            var result = await _httpClient.PutAsync($"UpdateStudent/upload", responce);
 
             var students = JsonConvert.DeserializeObject<Student>(await result.Content.ReadAsStringAsync());
 

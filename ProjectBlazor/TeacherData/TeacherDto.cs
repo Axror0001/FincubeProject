@@ -30,7 +30,7 @@ namespace ProjectBlazor.TeacherData
         public async Task<Teacher> CreateTeacher(CreateTeacherDto teacher)
         {
             var request = new StringContent(JsonConvert.SerializeObject(teacher), UnicodeEncoding.UTF8, "application/json");
-            var responce = await _httpClient.PostAsync("CreateTeacher/", request);
+            var responce = await _httpClient.PostAsync("CreateTeacher/create", request);
             var result = JsonConvert.DeserializeObject<Teacher>(await responce.Content.ReadAsStringAsync());
 
             return result;
@@ -44,7 +44,7 @@ namespace ProjectBlazor.TeacherData
         public async Task<Teacher> UpdateTeacheres(CreateTeacherDto teacher)
         {
             var responce = new StringContent(JsonConvert.SerializeObject(teacher), UnicodeEncoding.UTF8, "application/json");
-            var resultat = await _httpClient.PutAsync($"UpdateTeacher/", responce);
+            var resultat = await _httpClient.PutAsync($"UpdateTeacher/upload", responce);
 
             return JsonConvert.DeserializeObject<Teacher>(await resultat.Content.ReadAsStringAsync());
         }

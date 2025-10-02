@@ -43,7 +43,7 @@ namespace Project_First.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost("upload")]
         public async Task<IActionResult> UploadStudents(IFormFile e)
         {
             /*var files = e.File;*/
@@ -84,7 +84,7 @@ namespace Project_First.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateStudent(CreateStudentDto studentDTO)
         {
             var student = new Student()
